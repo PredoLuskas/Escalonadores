@@ -134,7 +134,7 @@ public class Escalonador {
             tempoRetorno = (tempoAtual - processo.getTempoDeChegada());*/
         }
 
-        System.out.println("Media tempo retorno: " + tempoRetornoTotal / tamList + "media tempo resposta:" + tempoRespostaTotal / tamList);
+        System.out.println(" RR Media tempo retorno: " + tempoRetornoTotal / tamList + "media tempo resposta:" + tempoRespostaTotal / tamList);
     }
 
     public void SJF() throws IOException {
@@ -206,25 +206,8 @@ public class Escalonador {
 
 
         // Imprimir resultados
-        System.out.println("FCFS " + String.format("Media tempo retorno: %.2f", mediaTempoRetorno) + " " + String.format("Media tempo resposta: %.2f", mediaTempoResposta) + " " + String.format("Media tempo Espera: %.2f", mediaTempoEspera));
+        System.out.println("SJF " + String.format("Media tempo retorno: %.2f", mediaTempoRetorno) + " " + String.format("Media tempo resposta: %.2f", mediaTempoResposta) + " " + String.format("Media tempo Espera: %.2f", mediaTempoEspera));
     }
-
-        /*
-            tempoAtual += listaDeProntidao.get(0).getTempoDeExecucao();
-
-            // Verifique se o processo ainda não terminou
-            if (processoAtual.getTempoDeExecucao()  0) {
-                // Coloque o processo no final da lista
-                if (processoAtual.getTempoDeExecucao() == 0) {
-                    // O processo terminou, imprima informações
-                    System.out.println(" terminou em " + tempoAtual + " unidades de tempo.");
-                    tempoRetorno = tempoAtual - listaDeProntidao.get(0).getTempoDeChegada();
-                    tempoRetornoTotal += tempoRetorno;
-                    listaDeProntidao.remove(0); // Remova da posição atual
-                    continue;
-                }
-                listaDeProntidao.add(processoAtual);
-                listaDeProntidao.remove(0); // Remova da posição atual*/
 }
 
 
