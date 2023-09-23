@@ -4,7 +4,9 @@ import FilesManipulator.IOFiles;
 import model.Process;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class Escalonador {
 
@@ -152,34 +154,79 @@ public class Escalonador {
         }
     }*/
 
-   public void roundRobin() throws IOException {
+    public void roundRobin() throws IOException {
         int tempoAtual = 0;
-        List<Process> processos = new ArrayList<>();
+        List<Process> listaDeProntidao = new ArrayList<>();
 
-        processos = IOFiles.readerFile(path);  // Adicione processos à lista (nome, tempo de chegada, tempo de execução)
+        listaDeProntidao = IOFiles.readerFile(path);  // Adicione processos à lista (nome, tempo de chegada, tempo de execução)
+
+        listaDeProntidao.sort(Comparator.comparingInt(Process::getTempoDeChegada)); //Ordenando por tempo de chegada os processos que chegaram
 
 
-        while (!processos.isEmpty()) {
-            Process processoAtual = processos.get(0);
-            if (processoAtual.getTempoRestante() > 0) {
-                int tempoDeExecucaoAtual = Math.min(2, processoAtual.getTempoRestante());
+        int quantum = 2; // Tamanho do quantum em unidades de tempo
 
-                System.out.println(tempoDeExecucaoAtual + " unidades de tempo.");
+        double tempoEspera = 0;
+        double tempoRetorno = 0;
+        double tempoResposta = 0;
+        int tamList = listaDeProntidao.size();
 
-                processoAtual.setTempoRestante(processoAtual.getTempoRestante() - tempoDeExecucaoAtual);
-                tempoAtual += tempoDeExecucaoAtual;
+        double tempoEsperaTotal = 0;
+        double tempoRetornoTotal = 0;
+        double tempoRespostaTotal = 0;
 
-                // Movemos o processo para o final da lista se ele ainda não foi concluído
-                if (processoAtual.getTempoRestante() > 0) {
-                    processos.add(processos.remove(0));
-                } else {
-                    // Removemos o processo se ele foi concluído
-                    processos.remove(0);
-                }
-            } else {
-                // Removemos o processo se ele foi concluído
-                processos.remove(0);
-            }
+        for (Process process : listaDeProntidao) {
+            process.setQuantProcess(0);
         }
+        int i = 0;
+        while (!listaDeProntidao.isEmpty()) {
+            Process processoAtual = listaDeProntidao.get(0);
+
+            // Verifique se o processo chegou antes do tempo atual
+     /*      if (processoAtual.getTempoDeChegada() > tempoAtual) {
+             //  tempoAtual = processoAtual.getTempoDeChegada();
+               listaDeProntidao.add(processoAtual);
+               listaDeProntidao.remove(0);
+               continue;
+           }
+*/
+            // Execute o processo por um quantum ou até que ele termine
+            int tempoExecutado = Math.min(quantum, processoAtual.getTempoDeExecucao());
+            processoAtual.setTempoDeExecucao(processoAtual.getTempoDeExecucao() - tempoExecutado);
+
+            if (listaDeProntidao.get(0).getQuantProcess() == 0) {
+                tempoResposta = tempoAtual - listaDeProntidao.get(0).getTempoDeChegada();
+                tempoRespostaTotal+=tempoResposta;
+            }
+
+            listaDeProntidao.get(0).setQuantProcess(++i);
+            // Atualize o tempo atual
+            tempoAtual += tempoExecutado;
+
+            // Verifique se o processo ainda não terminou
+            if (processoAtual.getTempoDeExecucao() >= 0) {
+                // Coloque o processo no final da lista
+                if (processoAtual.getTempoDeExecucao() == 0) {
+                    // O processo terminou, imprima informações
+                    System.out.println(" terminou em " + tempoAtual + " unidades de tempo.");
+                    tempoRetorno = tempoAtual - listaDeProntidao.get(0).getTempoDeChegada();
+                    tempoRetornoTotal += tempoRetorno;
+                    listaDeProntidao.remove(0); // Remova da posição atual
+                    continue;
+                }
+                listaDeProntidao.add(processoAtual);
+                listaDeProntidao.remove(0); // Remova da posição atual
+            }
+
+/*            int tempoDeEntrada = Math.max(tempoAtual, processoAtual.getTempoDeChegada());
+            tempoResposta = tempoDeEntrada - processo.getTempoDeChegada();
+            tempoRespostaTotal += tempoResposta; // Tempo Resposta
+            tempoEsperaTotal = tempoRespostaTotal; //Tempo de espera - No FCFS o tempo de  resposta é igual ao tempo de espera
+
+            tempoAtual = tempoDeEntrada + processo.getTempoDeExecucao();
+            tempoRetorno = (tempoAtual - processo.getTempoDeChegada());*/
+        }
+
+        System.out.println("Media tempo retorno: " + tempoRetornoTotal / tamList + "media tempo resposta:" +tempoRespostaTotal / tamList );
     }
 }
+

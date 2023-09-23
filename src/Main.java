@@ -13,6 +13,6 @@ public class Main {
         Escalonador escalonador = new Escalonador();
         escalonador.FCFS();
        // escalonador.SJF();
-      //  escalonador.roundRobin();
+        escalonador.roundRobin();
     }
     }

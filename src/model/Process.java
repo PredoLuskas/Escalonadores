@@ -5,6 +5,16 @@ public class Process {
 
     int tempoDeChegada;
     int tempoDeExecucao;
+    int quantProcess;
+    public int getQuantProcess() {
+        return quantProcess;
+    }
+
+    public void setQuantProcess(int quantProcess) {
+        this.quantProcess = quantProcess;
+    }
+
+
 
     public int getTempoRestante() {
         return tempoRestante;
@@ -21,13 +31,8 @@ public class Process {
     public Process(int tempoDeChegada, int tempoDeExecucao) {
         this.tempoDeChegada = tempoDeChegada;
         this.tempoDeExecucao = tempoDeExecucao;
+        this.quantProcess = 0;
     }
-    public Process( int tempoDeChegada, int tempoDeExecucao, int tempoRestante) {
-        this.tempoDeChegada = tempoDeChegada;
-        this.tempoDeExecucao = tempoDeExecucao;
-        this.tempoRestante = tempoRestante;
-    }
-
     public int getTempoDeChegada() {
         return tempoDeChegada;
     }
