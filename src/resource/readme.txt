@@ -3,3 +3,5 @@ EmailContato: pedrolucas@eng.ci.ufpb.br
 Versão do Java: 17
 
 Para executar o programa corretamente, alterar a váriavel path dentro da classe "Escalonador" para o path que está sua entrada correta.
+
+Projeto no github: https://github.com/PredoLuskas/Escalonadores/tree/master
