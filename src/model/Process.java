@@ -8,6 +8,12 @@ public class Process {
     int quantProcess;
     double tempoUltimaExec;
 
+    public Process(int tempoDeChegada, int tempoDeExecucao) {
+        this.tempoDeChegada = tempoDeChegada;
+        this.tempoDeExecucao = tempoDeExecucao;
+        this.quantProcess = 0;
+    }
+
     public double getTempoUltimaExec() {
         return tempoUltimaExec;
     }
@@ -15,6 +21,7 @@ public class Process {
     public void setTempoUltimaExec(double tempoUltimaExec) {
         this.tempoUltimaExec = tempoUltimaExec;
     }
+
     public int getQuantProcess() {
         return quantProcess;
     }
@@ -23,11 +30,6 @@ public class Process {
         this.quantProcess = quantProcess;
     }
 
-    public Process(int tempoDeChegada, int tempoDeExecucao) {
-        this.tempoDeChegada = tempoDeChegada;
-        this.tempoDeExecucao = tempoDeExecucao;
-        this.quantProcess = 0;
-    }
     public int getTempoDeChegada() {
         return tempoDeChegada;
     }

@@ -3,7 +3,6 @@ package escalonadores;
 import FilesManipulator.IOFiles;
 import model.Process;
 
-import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 
@@ -11,8 +10,8 @@ public class Escalonador {
 
     String path = "C:/Projetos/Java/SistemaOperacional/Escalonadores/src/resource/file.txt";
 
-    public void FCFS() throws IOException {
-        List<Process> processos ;
+    public void FCFS() {
+        List<Process> processos;
 
         processos = IOFiles.readerFile(path);  // Adicione processos à lista (nome, tempo de chegada, tempo de execução)
 
@@ -52,10 +51,10 @@ public class Escalonador {
         double mediaTempoEspera = tempoEsperaTotal / processos.size();
 
         // Imprimir resultados
-        System.out.printf("FCFS %.2f %.2f %.2f%n", mediaTempoRetorno, mediaTempoResposta, mediaTempoEspera);
+        System.out.printf("FCFS %.1f %.1f %.1f%n", mediaTempoRetorno, mediaTempoResposta, mediaTempoEspera);
     }
 
-    public void roundRobin() throws IOException {
+    public void roundRobin() {
         int tempoAtual = 0;
         List<Process> listaDeProntidao;
 
@@ -67,7 +66,7 @@ public class Escalonador {
 
         int quantum = 2; // Tamanho do quantum em unidades de tempo
 
-        double tempoRetorno ;
+        double tempoRetorno;
         double tempoResposta = 0;
         int tamList = listaDeProntidao.size();
 
@@ -81,7 +80,7 @@ public class Escalonador {
             process.setQuantProcess(0);
         }
         int i = 0;
-        int j= 0;
+        int j = 0;
         int aux = 0;
         while (!listaDeProntidao.isEmpty()) {
             var processoAtual = listaDeProntidao.get(0);
@@ -95,7 +94,7 @@ public class Escalonador {
                     }
                     j++;
                 }
-                if(processoAtual.getTempoDeChegada() > tempoAtual && aux == 0){
+                if (processoAtual.getTempoDeChegada() > tempoAtual && aux == 0) {
                     listaDeProntidao.sort(Comparator.comparingInt(Process::getTempoDeChegada));
                     tempoAtual = listaDeProntidao.get(aux).getTempoDeChegada();
                 }
@@ -108,7 +107,7 @@ public class Escalonador {
             if (listaDeProntidao.get(0).getQuantProcess() == 0) {
                 tempoResposta = tempoAtual - listaDeProntidao.get(0).getTempoDeChegada();
                 tempoRespostaTotal += tempoResposta;
-                listaDeProntidao.set(0,processoAtual).setTempoUltimaExec(tempoAtual + tempoExecutado);
+                listaDeProntidao.set(0, processoAtual).setTempoUltimaExec(tempoAtual + tempoExecutado);
                 flag = false;
 
             }
@@ -117,7 +116,7 @@ public class Escalonador {
 
             // Atualize o tempo atual
 
-            if(flag) {
+            if (flag) {
                 tempoaux = tempoAtual - processoAtual.getTempoUltimaExec();
                 listaDeProntidao.set(0, processoAtual).setTempoUltimaExec((tempoAtual));
                 tempoEsperaTotal += tempoaux;
@@ -130,7 +129,7 @@ public class Escalonador {
                 if (processoAtual.getTempoDeExecucao() == 0) {
                     // O processo terminou, imprima informações
                     tempoRetorno = tempoAtual - listaDeProntidao.get(0).getTempoDeChegada();
-               //     tempoEsperaTotal = tempoEsperaTotal + processoAtual.getTempoUltimaExec();
+                    //     tempoEsperaTotal = tempoEsperaTotal + processoAtual.getTempoUltimaExec();
                     tempoRetornoTotal += tempoRetorno;
                     listaDeProntidao.remove(0); // Remova da posição atual
                     flag = true;
@@ -148,10 +147,10 @@ public class Escalonador {
         double mediaTempoResposta = tempoRespostaTotal / tamList;
         double mediaTempoEspera = (tempoEsperaTotal + tempoResposta) / tamList;
 
-        System.out.printf("RR %.2f %.2f %.2f%n", mediaTempoRetorno, mediaTempoResposta, mediaTempoEspera);
+        System.out.printf("RR %.1f %.1f %.1f%n", mediaTempoRetorno, mediaTempoResposta, mediaTempoEspera);
     }
 
-    public void SJF() throws IOException {
+    public void SJF() {
         int tempoAtual = 0;
         List<Process> listaDeProntidao;
 
@@ -187,7 +186,7 @@ public class Escalonador {
                     }
                     i++;
                 }
-                if(processoAtual.getTempoDeChegada() > tempoAtual && aux == 0){
+                if (processoAtual.getTempoDeChegada() > tempoAtual && aux == 0) {
                     listaDeProntidao.sort(Comparator.comparingInt(Process::getTempoDeChegada));
                     tempoAtual = listaDeProntidao.get(aux).getTempoDeChegada();
                 }
@@ -215,7 +214,7 @@ public class Escalonador {
         double mediaTempoEspera = tempoEsperaTotal / tamList;
 
 
-        System.out.printf("SJF %.2f %.2f %.2f%n", mediaTempoRetorno, mediaTempoResposta, mediaTempoEspera);
+        System.out.printf("SJF %.1f %.1f %.1f%n", mediaTempoRetorno, mediaTempoResposta, mediaTempoEspera);
     }
 }
 
