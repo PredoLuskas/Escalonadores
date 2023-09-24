@@ -74,7 +74,7 @@ public class Escalonador {
         double tempoEsperaTotal = 0;
         double tempoRetornoTotal = 0;
         double tempoRespostaTotal = 0;
-
+        double tempoaux;
         boolean flag = true;
 
         for (Process process : listaDeProntidao) {
@@ -113,17 +113,19 @@ public class Escalonador {
 
             }
 
-            if (processoAtual.getTempoDeExecucao() == 0 && processoAtual.getQuantProcess() == 0) {
+/*            if (processoAtual.getTempoDeExecucao() == 0 && processoAtual.getQuantProcess() == 0) { //nao funciona se o processo tem mais d uma exec
                 listaDeProntidao.set(0, processoAtual).setTempoUltimaExec((tempoResposta));
-            }
+            }*/
 
             listaDeProntidao.get(0).setQuantProcess(++i);
 
-            if(flag) {
-                listaDeProntidao.set(0, processoAtual).setTempoUltimaExec((tempoAtual - processoAtual.getTempoUltimaExec()));
-            }
-
             // Atualize o tempo atual
+
+            if(flag) {
+                tempoaux = tempoAtual - processoAtual.getTempoUltimaExec();
+                listaDeProntidao.set(0, processoAtual).setTempoUltimaExec((tempoAtual));
+                tempoEsperaTotal += tempoaux;
+            }
             tempoAtual += tempoExecutado;
 
             // Verifique se o processo ainda não terminou
@@ -132,7 +134,7 @@ public class Escalonador {
                 if (processoAtual.getTempoDeExecucao() == 0) {
                     // O processo terminou, imprima informações
                     tempoRetorno = tempoAtual - listaDeProntidao.get(0).getTempoDeChegada();
-                    tempoEsperaTotal = tempoEsperaTotal + processoAtual.getTempoUltimaExec();
+               //     tempoEsperaTotal = tempoEsperaTotal + processoAtual.getTempoUltimaExec();
                     tempoRetornoTotal += tempoRetorno;
                     listaDeProntidao.remove(0); // Remova da posição atual
                     flag = true;
@@ -148,7 +150,7 @@ public class Escalonador {
 
         double mediaTempoRetorno = tempoRetornoTotal / tamList;
         double mediaTempoResposta = tempoRespostaTotal / tamList;
-        double mediaTempoEspera = tempoEsperaTotal / tamList;
+        double mediaTempoEspera = (tempoEsperaTotal + tempoResposta) / tamList;
 
         System.out.printf("RR %.2f %.2f %.2f%n", mediaTempoRetorno, mediaTempoResposta, mediaTempoEspera);
     }
