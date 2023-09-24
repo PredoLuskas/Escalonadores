@@ -113,10 +113,6 @@ public class Escalonador {
 
             }
 
-/*            if (processoAtual.getTempoDeExecucao() == 0 && processoAtual.getQuantProcess() == 0) { //nao funciona se o processo tem mais d uma exec
-                listaDeProntidao.set(0, processoAtual).setTempoUltimaExec((tempoResposta));
-            }*/
-
             listaDeProntidao.get(0).setQuantProcess(++i);
 
             // Atualize o tempo atual
