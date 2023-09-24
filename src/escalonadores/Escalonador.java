@@ -8,6 +8,7 @@ import java.util.List;
 
 public class Escalonador {
 
+    /** Alterar a váriavel "path" para o caminho do arquivo que será utilizado */
     String path = "C:/Projetos/Java/SistemaOperacional/Escalonadores/src/resource/file.txt";
 
     public void FCFS() {
@@ -67,7 +68,7 @@ public class Escalonador {
         int quantum = 2; // Tamanho do quantum em unidades de tempo
 
         double tempoRetorno;
-        double tempoResposta = 0;
+        double tempoResposta;
         int tamList = listaDeProntidao.size();
 
         double tempoEsperaTotal = 0;
@@ -93,7 +94,7 @@ public class Escalonador {
                         continue;
                     }
                     j++;
-                }
+                } // Após pegar o processo certo, faz um sort para organizar novamente por FCFO
                 if (processoAtual.getTempoDeChegada() > tempoAtual && aux == 0) {
                     listaDeProntidao.sort(Comparator.comparingInt(Process::getTempoDeChegada));
                     tempoAtual = listaDeProntidao.get(aux).getTempoDeChegada();
@@ -117,8 +118,8 @@ public class Escalonador {
             // Atualize o tempo atual
 
             if (flag) {
-                tempoaux = tempoAtual - processoAtual.getTempoUltimaExec();
-                listaDeProntidao.set(0, processoAtual).setTempoUltimaExec((tempoAtual));
+                tempoaux = tempoAtual - processoAtual.getTempoUltimaExec() ;
+                listaDeProntidao.set(0, processoAtual).setTempoUltimaExec((tempoAtual + tempoExecutado));
                 tempoEsperaTotal += tempoaux;
             }
             tempoAtual += tempoExecutado;
@@ -145,7 +146,7 @@ public class Escalonador {
 
         double mediaTempoRetorno = tempoRetornoTotal / tamList;
         double mediaTempoResposta = tempoRespostaTotal / tamList;
-        double mediaTempoEspera = (tempoEsperaTotal + tempoResposta) / tamList;
+        double mediaTempoEspera = (tempoEsperaTotal + tempoRespostaTotal) / tamList;
 
         System.out.printf("RR %.1f %.1f %.1f%n", mediaTempoRetorno, mediaTempoResposta, mediaTempoEspera);
     }
