@@ -4,7 +4,6 @@ import FilesManipulator.IOFiles;
 import model.Process;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -13,7 +12,7 @@ public class Escalonador {
     String path = "C:/Projetos/Java/SistemaOperacional/Escalonadores/src/resource/file.txt";
 
     public void FCFS() throws IOException {
-        List<Process> processos = new ArrayList<>();
+        List<Process> processos ;
 
         processos = IOFiles.readerFile(path);  // Adicione processos à lista (nome, tempo de chegada, tempo de execução)
 
@@ -21,12 +20,8 @@ public class Escalonador {
         processos.sort(Comparator.comparingInt(Process::getTempoDeChegada)); //Ordenando por tempo de chegada os processos que chegaram
 
         int tempoAtual = 0;
-        int tempoInicio = 0;
-
-        // Calcular métricas
-        double tempoEspera = 0;
-        double tempoRetorno = 0;
-        double tempoResposta = 0;
+        double tempoRetorno;
+        double tempoResposta;
 
         double tempoEsperaTotal = 0;
         double tempoRetornoTotal = 0;
@@ -64,17 +59,17 @@ public class Escalonador {
 
     public void roundRobin() throws IOException {
         int tempoAtual = 0;
-        List<Process> listaDeProntidao = new ArrayList<>();
+        List<Process> listaDeProntidao;
 
         listaDeProntidao = IOFiles.readerFile(path);  // Adicione processos à lista (nome, tempo de chegada, tempo de execução)
 
+        assert listaDeProntidao != null;
         listaDeProntidao.sort(Comparator.comparingInt(Process::getTempoDeChegada)); //Ordenando por tempo de chegada os processos que chegaram
 
 
         int quantum = 2; // Tamanho do quantum em unidades de tempo
 
-        double tempoEspera = 0;
-        double tempoRetorno = 0;
+        double tempoRetorno ;
         double tempoResposta = 0;
         int tamList = listaDeProntidao.size();
 
@@ -82,21 +77,32 @@ public class Escalonador {
         double tempoRetornoTotal = 0;
         double tempoRespostaTotal = 0;
 
+        boolean flag = true;
+
         for (Process process : listaDeProntidao) {
             process.setQuantProcess(0);
         }
         int i = 0;
+        int j= 0;
+        int aux = 0;
         while (!listaDeProntidao.isEmpty()) {
-            Process processoAtual = listaDeProntidao.get(0);
+            var processoAtual = listaDeProntidao.get(0);
 
             // Verifique se o processo chegou antes do tempo atual
-     /*      if (processoAtual.getTempoDeChegada() > tempoAtual) {
-             //  tempoAtual = processoAtual.getTempoDeChegada();
-               listaDeProntidao.add(processoAtual);
-               listaDeProntidao.remove(0);
-               continue;
-           }
-*/
+            if (processoAtual.getTempoDeChegada() > tempoAtual) {
+                for (Process process : listaDeProntidao) {
+                    if (process.getTempoDeChegada() <= tempoAtual) {
+                        aux = j;
+                        continue;
+                    }
+                    j++;
+                }
+                if(processoAtual.getTempoDeChegada() > tempoAtual && aux == 0){
+                    listaDeProntidao.sort(Comparator.comparingInt(Process::getTempoDeChegada));
+                    tempoAtual = listaDeProntidao.get(aux).getTempoDeChegada();
+                }
+            }
+
             // Execute o processo por um quantum ou até que ele termine
             int tempoExecutado = Math.min(quantum, processoAtual.getTempoDeExecucao());
             processoAtual.setTempoDeExecucao(processoAtual.getTempoDeExecucao() - tempoExecutado);
@@ -104,9 +110,21 @@ public class Escalonador {
             if (listaDeProntidao.get(0).getQuantProcess() == 0) {
                 tempoResposta = tempoAtual - listaDeProntidao.get(0).getTempoDeChegada();
                 tempoRespostaTotal += tempoResposta;
+                listaDeProntidao.set(0,processoAtual).setTempoUltimaExec(tempoAtual + tempoExecutado);
+                flag = false;
+
+            }
+
+            if (processoAtual.getTempoDeExecucao() == 0 && processoAtual.getQuantProcess() == 0) {
+                listaDeProntidao.set(0, processoAtual).setTempoUltimaExec((tempoResposta));
             }
 
             listaDeProntidao.get(0).setQuantProcess(++i);
+
+            if(flag) {
+                listaDeProntidao.set(0, processoAtual).setTempoUltimaExec((tempoAtual - processoAtual.getTempoUltimaExec()));
+            }
+
             // Atualize o tempo atual
             tempoAtual += tempoExecutado;
 
@@ -117,47 +135,42 @@ public class Escalonador {
                     // O processo terminou, imprima informações
                     System.out.println(" terminou em " + tempoAtual + " unidades de tempo.");
                     tempoRetorno = tempoAtual - listaDeProntidao.get(0).getTempoDeChegada();
+                    tempoEsperaTotal = tempoEsperaTotal + processoAtual.getTempoUltimaExec();
                     tempoRetornoTotal += tempoRetorno;
                     listaDeProntidao.remove(0); // Remova da posição atual
+                    flag = true;
+
                     continue;
                 }
                 listaDeProntidao.add(processoAtual);
                 listaDeProntidao.remove(0); // Remova da posição atual
             }
-
-/*            int tempoDeEntrada = Math.max(tempoAtual, processoAtual.getTempoDeChegada());
-            tempoResposta = tempoDeEntrada - processo.getTempoDeChegada();
-            tempoRespostaTotal += tempoResposta; // Tempo Resposta
-            tempoEsperaTotal = tempoRespostaTotal; //Tempo de espera - No FCFS o tempo de  resposta é igual ao tempo de espera
-
-            tempoAtual = tempoDeEntrada + processo.getTempoDeExecucao();
-            tempoRetorno = (tempoAtual - processo.getTempoDeChegada());*/
+            aux = 0;
+            flag = true;
         }
 
-        System.out.println(" RR Media tempo retorno: " + tempoRetornoTotal / tamList + "media tempo resposta:" + tempoRespostaTotal / tamList);
+
+        System.out.println(" RR Media tempo retorno: " + tempoRetornoTotal / tamList + "media tempo resposta:" + tempoRespostaTotal / tamList + "Media tempo Espera: " + tempoEsperaTotal / tamList);
     }
 
     public void SJF() throws IOException {
         int tempoAtual = 0;
-        List<Process> listaDeProntidao = new ArrayList<>();
+        List<Process> listaDeProntidao;
 
         listaDeProntidao = IOFiles.readerFile(path);  // Adicione processos à lista (nome, tempo de chegada, tempo de execução)
 
+        assert listaDeProntidao != null;
         listaDeProntidao.sort(Comparator.comparingInt(Process::getTempoDeExecucao)); //Ordenando por tempo de chegada os processos que chegaram
 
 
-        int quantum = 2; // Tamanho do quantum em unidades de tempo
-
-        double tempoEspera = 0;
-        double tempoRetorno = 0;
-        double tempoResposta = 0;
+        double tempoRetorno;
+        double tempoResposta;
         int tamList = listaDeProntidao.size();
 
         double tempoEsperaTotal = 0;
         double tempoRetornoTotal = 0;
         double tempoRespostaTotal = 0;
         double tempoInicial;
-        List<Process> listaAux = new ArrayList<>();
 
         for (Process process : listaDeProntidao) {
             process.setQuantProcess(0);
