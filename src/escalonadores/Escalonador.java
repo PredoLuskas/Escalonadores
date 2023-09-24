@@ -30,7 +30,6 @@ public class Escalonador {
 
         for (Process processo : processos) {
 
-            System.out.println(processo.getTempoDeChegada() + " " + processo.getTempoDeExecucao());
             if (tempoAtual < processo.getTempoDeChegada()) {
                 // Se o processo ainda não chegou, espere
                 tempoAtual = processo.getTempoDeChegada();
@@ -52,9 +51,8 @@ public class Escalonador {
         double mediaTempoResposta = tempoRespostaTotal / processos.size();
         double mediaTempoEspera = tempoEsperaTotal / processos.size();
 
-
         // Imprimir resultados
-        System.out.println("FCFS " + String.format("Media tempo retorno: %.2f", mediaTempoRetorno) + " " + String.format("Media tempo resposta: %.1f", mediaTempoResposta) + " " + String.format("Media tempo Espera: %.1f", mediaTempoEspera));
+        System.out.printf("FCFS %.2f %.2f %.2f%n", mediaTempoRetorno, mediaTempoResposta, mediaTempoEspera);
     }
 
     public void roundRobin() throws IOException {
@@ -133,7 +131,6 @@ public class Escalonador {
                 // Coloque o processo no final da lista
                 if (processoAtual.getTempoDeExecucao() == 0) {
                     // O processo terminou, imprima informações
-                    System.out.println(" terminou em " + tempoAtual + " unidades de tempo.");
                     tempoRetorno = tempoAtual - listaDeProntidao.get(0).getTempoDeChegada();
                     tempoEsperaTotal = tempoEsperaTotal + processoAtual.getTempoUltimaExec();
                     tempoRetornoTotal += tempoRetorno;
@@ -149,8 +146,11 @@ public class Escalonador {
             flag = true;
         }
 
+        double mediaTempoRetorno = tempoRetornoTotal / tamList;
+        double mediaTempoResposta = tempoRespostaTotal / tamList;
+        double mediaTempoEspera = tempoEsperaTotal / tamList;
 
-        System.out.println(" RR Media tempo retorno: " + tempoRetornoTotal / tamList + "media tempo resposta:" + tempoRespostaTotal / tamList + "Media tempo Espera: " + tempoEsperaTotal / tamList);
+        System.out.printf("RR %.2f %.2f %.2f%n", mediaTempoRetorno, mediaTempoResposta, mediaTempoEspera);
     }
 
     public void SJF() throws IOException {
@@ -197,7 +197,6 @@ public class Escalonador {
 
             tempoInicial = tempoAtual;
             tempoAtual += listaDeProntidao.get(aux).getTempoDeExecucao();
-            System.out.println(" terminou em " + tempoAtual + " unidades de tempo.");
 
             double tempoDeEntrada = Math.max(tempoInicial, listaDeProntidao.get(aux).getTempoDeChegada());
             tempoResposta = tempoDeEntrada - listaDeProntidao.get(aux).getTempoDeChegada();
@@ -218,8 +217,7 @@ public class Escalonador {
         double mediaTempoEspera = tempoEsperaTotal / tamList;
 
 
-        // Imprimir resultados
-        System.out.println("SJF " + String.format("Media tempo retorno: %.2f", mediaTempoRetorno) + " " + String.format("Media tempo resposta: %.2f", mediaTempoResposta) + " " + String.format("Media tempo Espera: %.2f", mediaTempoEspera));
+        System.out.printf("SJF %.2f %.2f %.2f%n", mediaTempoRetorno, mediaTempoResposta, mediaTempoEspera);
     }
 }
 
